@@ -1,0 +1,28 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Keep lockfile
+!.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Misc
+.DS_Store
+.vscode/
+.idea/
+# Local env / editor
+.env.*
+!.env.example
+
+# Local app data (personal study records)
+.data/

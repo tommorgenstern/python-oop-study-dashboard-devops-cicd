@@ -1,0 +1,33 @@
+name: Promote to Production
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-central-1
+  IMAGE_NAME: digitalstudytools/web
+  ECS_CLUSTER: digitalstudytools-cluster
+  ECS_SERVICE_PROD: digitalstudytools-web-prod
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+      - id: ecr
+        name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Force new deployment (production)
+        run: |
+          aws ecs update-service \
+            --cluster  "${{ env.ECS_CLUSTER }}" \
+            --service  "${{ env.ECS_SERVICE_PROD }}" \
+            --force-new-deployment \
+            --no-cli-pager
